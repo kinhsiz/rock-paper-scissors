@@ -1,54 +1,74 @@
-function playRound(playerSelection, computerSelection) {
-  
-    let plaSelect = playerSelection;
-    let compSelect = computerSelection;
-   
-    if(plaSelect == compSelect) {
-      console.log("Nobody wins, try again!")
-    }
-    else if(plaSelect == "rock" && compSelect == "paper") {
-     return "compSelect wins!, paper beats rock!";
-    }
-    else if(plaSelect == "paper" && compSelect == "rock") {
-      return "plaSelect wins!, paper beats rock!";
-    }
-    else if(plaSelect == "scissors" && compSelect == "rock") {
-      return "compSelect wins! rock beats scissor!";
-    }
-    else if(plaSelect == "rock" && compSelect == "scissors") {
-      return "plaSelect wins! rock beats scissor!";
-    }
-    else if(plaSelect == "paper" && compSelect == "scissors") {
-      return "compSelect wins! scissors beats paper!";
-    }
-    else if(plaSelect == "scissor" && compSelect == "paper") {
-      return "plaSelect wins! scissors beats paper!";
-    }
-  };
-  
-  
-  /*const playerSelection = function() {
-    let playerChoice = prompt("type rock, paper OR scissors").toLowerCase(); 
-    
-    if(playerChoice == "rock" || playerChoice == "paper" || playerChoice == "scissors") {
-      return playerChoice;
-    };
-    
-   console.log("Type a valid selection");
-  };
-  */
-  
-  const playerSelection = prompt("type rock, paper OR scissors").toLowerCase();
-  
-  const computerSelection = function() {
-    const options = ["rock", "paper", "scissors"];
-    return options[Math.floor(Math.random() * options.length)];
-  };
-  
-  computerSelection();
-  
-  console.log(playRound(playerSelection, computerSelection()));
+let playerScore = 0;
+let computerScore = 0;
+const buttons = document.querySelectorAll('input');
+const reloadButton = document.querySelector('button');
 
-  /* was having a hard time understanding why computerSelection value and playerSelection value
-  was not being passed as paramentes to playRound function. I needed to do activate function
-  inside playRound as an argument by adding "()" at the end */
+
+// Return what the computer pick between rock, paper, or scissors
+const computerPlay = function() {
+  const options = ["rock", "paper", "scissors"];
+  return options[Math.floor(Math.random() * options.length)];
+};
+function disabledButtons() {
+  buttons.forEach(button => {
+    button.disabled = true;
+  })
+}
+
+// Play one round of rock, paper, or scissors 
+let userSelection;
+
+function playRound(playerSelection) {
+  
+    let computerSelection = computerPlay();
+    let result = "";
+   
+    if((playerSelection == "rock" && computerSelection == "paper") || 
+    (playerSelection == "scissors" && computerSelection == "rock") ||
+    (playerSelection == "paper" && computerSelection == "scissors")) {
+  
+      computerScore += 1
+      result = (`you lose! ${computerSelection} beats ${playerSelection}!` + 
+      '<br><br>Computer Score: ' + computerScore + '<br>Player Score: ' + playerScore);
+
+      if(computerScore == 5) {
+        result += "<br><br><span style= 'color: red'>You lose the game, reload the game to play again!"
+        disabledButtons();
+        reloading();
+      }
+    }
+
+    else if(playerSelection == computerSelection) {
+      result = ('It\'s a tie! You both chose ' + playerSelection + '!' + 
+      '<br><br>Computer Score: ' + computerScore + '<br>Player Score: ' + playerScore) 
+    }
+
+    else {
+      playerScore += 1
+      result = (`you win! ${playerSelection} beats ${computerSelection}` + 
+      '<br><br>Computer Score: ' + computerScore + '<br>Player Score: ' + playerScore)
+
+      if (playerScore == 5) {
+        result += "<br><br><span style= 'color: green'>Yay, you win the game! reload to play again!</span>"
+        disabledButtons();
+        reloading();
+      }
+    }
+    document.getElementById('result').innerHTML = result
+    return
+  }
+
+  buttons.forEach(button => {
+    button.addEventListener('click', function(){
+      playRound(button.value);
+  });
+})
+
+/********RELOADING GAME**************/
+function reload() {
+  location.reload();
+} 
+function reloading() {
+  reloadButton.addEventListener('click', reload);
+  }
+
